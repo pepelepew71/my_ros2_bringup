@@ -1,5 +1,4 @@
 """
-world_name: cloister, cloister_asphalt, gallery, playpen, playpen_asphalt
 """
 
 import os
@@ -9,23 +8,23 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
+FOLDER_BRINGUP = get_package_share_directory('my_ros2_bringup')
+FOLDER_ROBOT = get_package_share_directory('my_ros2_robot_gazebo')
+
 def generate_launch_description():
     """
     """
-    # -- vars
-    folder_bringup = get_package_share_directory('my_ros2_bringup')
-    folder_robot = get_package_share_directory('my_ros2_robot_gazebo')
 
     # -- IncludeLaunchDescription
-    # -- gazebo
+    # -- gazebo, world_name: cloister, cloister_asphalt, gallery, playpen, playpen_asphalt
     launch_world = IncludeLaunchDescription(
-        launch_description_source=PythonLaunchDescriptionSource(os.path.join(folder_robot, 'launch', '_gazebo.launch.py')),
+        launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_ROBOT, 'launch', '_gazebo.launch.py')),
         launch_arguments={'name': "cloister"}.items(),
     )
 
     # -- spawn robot
     launch_spawn = IncludeLaunchDescription(
-        launch_description_source=PythonLaunchDescriptionSource(os.path.join(folder_robot, 'launch', '_spawn_by_xacro.launch.py')),
+        launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_ROBOT, 'launch', '_spawn_by_xacro.launch.py')),
         launch_arguments={
             "use_sim_time": "true",
             "name": "r1",
@@ -41,9 +40,9 @@ def generate_launch_description():
     )
 
     # -- slam
-    path_params = os.path.join(folder_bringup, 'config', 'mapper_params_online_sync.yaml')
+    path_params = os.path.join(FOLDER_BRINGUP, 'config', 'mapper_params_online_sync.yaml')
     launch_slam = IncludeLaunchDescription(
-        launch_description_source=PythonLaunchDescriptionSource(os.path.join(folder_bringup, 'launch', '_online_sync_launch.py')),
+        launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_BRINGUP, 'launch', '_online_sync_launch.py')),
         launch_arguments={
             "slam_params_file": path_params,
         }.items()
@@ -51,7 +50,7 @@ def generate_launch_description():
 
     # -- navigation
     launch_nav = IncludeLaunchDescription(
-        launch_description_source=PythonLaunchDescriptionSource(os.path.join(folder_bringup, 'launch', '_nav.launch.py')),
+        launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_BRINGUP, 'launch', '_nav.launch.py')),
     )
 
     # -- LaunchDescription

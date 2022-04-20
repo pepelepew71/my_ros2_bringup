@@ -15,8 +15,6 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time')
     slam_params_file = LaunchConfiguration('slam_params_file')
     namespace = LaunchConfiguration('namespace', default="")
-    map_name = LaunchConfiguration('map_name', default="map")
-    node_name = LaunchConfiguration('node_name', default="slam_toolbox")
 
     declare_use_sim_time_argument = DeclareLaunchArgument('use_sim_time', default_value='true')
     declare_slam_params_file_cmd = DeclareLaunchArgument('slam_params_file')
@@ -29,10 +27,13 @@ def generate_launch_description():
         package='slam_toolbox',
         executable='sync_slam_toolbox_node',
         namespace=namespace,
-        name=node_name,
+        name='slam_toolbox',
         output='screen',
         remappings=[
-            ("map", map_name)
+            ("/map", "map"),
+            ("/map_metadata", "map_metadata"),
+            ("/slam_toolbox/scan_visualization", "slam_toolbox/scan_visualization"),
+            ("/slam_toolbox/graph_visualization", "slam_toolbox/graph_visualization"),
         ]
     )
 

@@ -1,6 +1,6 @@
 # /opt/ros/galactic/share/slam_toolbox/config/mapper_params_online_sync.yaml
 
-slam_toolbox_r1:
+/robot1/slam_toolbox:
   ros__parameters:
 
     # Plugin params
@@ -12,10 +12,10 @@ slam_toolbox_r1:
     ceres_loss_function: None
 
     # ROS Parameters
-    odom_frame: r1/odom
+    odom_frame: robot1/odom
     map_frame: map
-    base_frame: r1/base_link
-    scan_topic: r1/scan
+    base_frame: robot1/base_link
+    scan_topic: scan
     mode: mapping #localization
 
     # if you'd like to immediately start continuing a map at a given pose
