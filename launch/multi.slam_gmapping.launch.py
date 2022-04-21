@@ -77,14 +77,6 @@ def generate_launch_description():
     launch_robots = get_launch_robots(settings=settings)
 
     # -- static tf publisher
-    # node_tf0 = Node(
-    #     package='tf2_ros',
-    #     namespace='static_tf',
-    #     executable='static_transform_publisher',
-    #     name='pub0',
-    #     arguments=["0", "0", "0", "0", "0", "0", "world", "map"],
-    # )
-
     node_tf1 = Node(
         package='tf2_ros',
         namespace='static_tf',
@@ -113,7 +105,6 @@ def generate_launch_description():
     # -- LaunchDescription
     ld = LaunchDescription()
     ld.add_action(launch_world)
-    # ld.add_action(node_tf0)
     ld.add_action(node_tf1)
     ld.add_action(node_tf2)
     for i in launch_robots:
