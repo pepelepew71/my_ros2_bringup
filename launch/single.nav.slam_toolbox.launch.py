@@ -16,7 +16,6 @@ USE_SIM_TIME = LaunchConfiguration('use_sim_time', default='true')
 def generate_launch_description():
     """
     """
-
     # -- IncludeLaunchDescription
     # -- gazebo, world_name: cloister, cloister_asphalt, gallery, playpen, playpen_asphalt
     launch_world = IncludeLaunchDescription(
@@ -46,9 +45,14 @@ def generate_launch_description():
         launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_BRINGUP, 'launch', '_slam_toolbox.launch.py')),
     )
 
+    # -- navigation
+    launch_nav = IncludeLaunchDescription(
+        launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_BRINGUP, 'launch', '_nav.launch.py')),
+    )
+
     # -- rviz
     launch_rviz = IncludeLaunchDescription(
-        launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_BRINGUP, 'launch', '_rviz_slam.launch.py')),
+        launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_BRINGUP, 'launch', '_rviz_nav.launch.py')),
     )
 
     # -- LaunchDescription
@@ -56,6 +60,7 @@ def generate_launch_description():
     ld.add_action(launch_world)
     ld.add_action(launch_spawn)
     ld.add_action(launch_slam)
+    ld.add_action(launch_nav)
     ld.add_action(launch_rviz)
 
     return ld

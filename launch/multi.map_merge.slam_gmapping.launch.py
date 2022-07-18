@@ -15,7 +15,7 @@ from quaternions import Quaternion
 
 FOLDER_BRINGUP = get_package_share_directory('my_ros2_bringup')
 FOLDER_ROBOT = get_package_share_directory('my_ros2_robot_gazebo')
-# FOLDER_MAP_MERGE = get_package_share_directory('multirobot_map_merge')
+FOLDER_MAP_MERGE = get_package_share_directory('multirobot_map_merge')
 USE_SIM_TIME = LaunchConfiguration('use_sim_time', default='true')
 
 def get_launch_robots(settings: list) -> list:
@@ -96,11 +96,24 @@ def generate_launch_description():
     # -- slam
     node_slams = get_node_slams(settings=settings)
 
+    # -- rviz
+    launch_rviz = IncludeLaunchDescription(
+        launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_BRINGUP, 'launch', '_rviz_multi.launch.py')),
+    )
+
     # -- map merge
-    # launch_map_merge = IncludeLaunchDescription(
-    #     launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_MAP_MERGE, 'launch', 'map_merge.launch.py')),
-    #     # launch_arguments={'known_init_poses': "true"}.items(),
-    # )
+    node_map_merged = Node(
+        package="multirobot_map_merge",
+        name="map_merge",
+        namespace="/",
+        executable="map_merge",
+        parameters=[
+            os.path.join(FOLDER_BRINGUP, "config", "map_merged_w_init.yaml"),
+            # os.path.join(FOLDER_BRINGUP, "config", "map_merged_wo_init.yaml"),
+        ],
+        output="screen",
+        remappings=[("/tf", "tf"), ("/tf_static", "tf_static")],
+    )
 
     # -- LaunchDescription
     ld = LaunchDescription()
@@ -111,5 +124,7 @@ def generate_launch_description():
         ld.add_action(i)
     for i in node_slams:
         ld.add_action(i)
+    ld.add_action(launch_rviz)
+    ld.add_action(node_map_merged)
 
     return ld

@@ -12,13 +12,12 @@ FOLDER_BRINGUP = get_package_share_directory('my_ros2_bringup')
 def generate_launch_description():
     """
     """
-    # -- Node
     node_rviz2 = Node(
         package='rviz2',
         namespace='',
         executable='rviz2',
         name='rviz2',
-        arguments=['-d' + os.path.join(FOLDER_BRINGUP, 'rviz', 'nav.rviz')]
+        arguments=['-d' + os.path.join(FOLDER_BRINGUP, 'rviz', 'multi.rviz')]
     )
 
     # -- LaunchDescription

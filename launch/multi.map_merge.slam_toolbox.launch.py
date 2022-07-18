@@ -8,13 +8,15 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
+from launch.substitutions import LaunchConfiguration
 
 import numpy as np
 from quaternions import Quaternion
 
 FOLDER_BRINGUP = get_package_share_directory('my_ros2_bringup')
 FOLDER_ROBOT = get_package_share_directory('my_ros2_robot_gazebo')
-# FOLDER_MAP_MERGE = get_package_share_directory('multirobot_map_merge')
+FOLDER_MAP_MERGE = get_package_share_directory('multirobot_map_merge')
+USE_SIM_TIME = LaunchConfiguration('use_sim_time', default='true')
 
 def get_launch_robots(settings: list) -> list:
     output = list()
@@ -23,7 +25,7 @@ def get_launch_robots(settings: list) -> list:
         d = IncludeLaunchDescription(
             launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_ROBOT, 'launch', '_spawn_by_xacro.launch.py')),
             launch_arguments={
-                "use_sim_time": "true",
+                "use_sim_time": USE_SIM_TIME,
                 "name": s['name'],
                 "ns": s['name'],
                 "x": str(s['x']),
@@ -65,8 +67,8 @@ def generate_launch_description():
 
     # -- spawn robot
     settings = [
-        {'name': "robot1", "x":  0.0, "y": 0.0, "deg": 0.0},
-        {'name': "robot2", "x": -5.0, "y": -1.0, "deg": 180.0},
+        {'name': "robot1", "x":  1.0, "y": 0.0, "deg": 0.0},
+        {'name': "robot2", "x": -1.0, "y": 0.0, "deg": 180.0},
     ]
     launch_robots = get_launch_robots(settings=settings)
 
@@ -76,7 +78,7 @@ def generate_launch_description():
         namespace='static_tf',
         executable='static_transform_publisher',
         name='pub1',
-        arguments=["-15", "5", "0", "0", "0", "0", "world", "robot1/map"],
+        arguments=["10", "-20", "0", "0", "0", "0", "world", "robot1/map"],
     )
 
     node_tf2 = Node(
@@ -84,17 +86,30 @@ def generate_launch_description():
         namespace='static_tf',
         executable='static_transform_publisher',
         name='pub2',
-        arguments=["-15", "-5", "0", "0", "0", "0", "world", "robot2/map"],
+        arguments=["-10", "-20", "0", "0", "0", "0", "world", "robot2/map"],
     )
 
     # -- slam
     launch_slams = get_launch_slams(settings=settings)
 
+    # -- rviz
+    launch_rviz = IncludeLaunchDescription(
+        launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_BRINGUP, 'launch', '_rviz_multi.launch.py')),
+    )
+
     # -- map merge
-    # launch_map_merge = IncludeLaunchDescription(
-    #     launch_description_source=PythonLaunchDescriptionSource(os.path.join(FOLDER_MAP_MERGE, 'launch', 'map_merge.launch.py')),
-    #     # launch_arguments={'known_init_poses': "true"}.items(),
-    # )
+    node_map_merged = Node(
+        package="multirobot_map_merge",
+        name="map_merge",
+        namespace="/",
+        executable="map_merge",
+        parameters=[
+            os.path.join(FOLDER_BRINGUP, "config", "map_merged_w_init.yaml"),
+            # os.path.join(FOLDER_BRINGUP, "config", "map_merged_wo_init.yaml"),
+        ],
+        output="screen",
+        remappings=[("/tf", "tf"), ("/tf_static", "tf_static")],
+    )
 
     # -- LaunchDescription
     ld = LaunchDescription()
@@ -105,6 +120,7 @@ def generate_launch_description():
         ld.add_action(i)
     for i in launch_slams:
         ld.add_action(i)
-    # ld.add_action(launch_map_merge)
+    ld.add_action(launch_rviz)
+    ld.add_action(node_map_merged)
 
     return ld
