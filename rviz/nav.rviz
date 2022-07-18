@@ -28,6 +28,74 @@ Panels:
 Visualization Manager:
   Class: ""
   Displays:
+    - Alpha: 1
+      Class: rviz_default_plugins/RobotModel
+      Collision Enabled: false
+      Description File: ""
+      Description Source: Topic
+      Description Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /robot_description
+      Enabled: true
+      Links:
+        /back_caster_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        /base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        /front_caster_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        /imu_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        /lidar_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        /plate_1_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        /plate_2_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        /wheel_left_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        /wheel_right_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+      Name: RobotModel
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
     - Alpha: 0.5
       Cell Size: 1
       Class: rviz_default_plugins/Grid
@@ -89,8 +157,6 @@ Visualization Manager:
           Value: true
         base_link:
           Value: true
-        camera_link:
-          Value: true
         front_caster_link:
           Value: true
         imu_link:
@@ -119,8 +185,6 @@ Visualization Manager:
           odom:
             base_link:
               back_caster_link:
-                {}
-              camera_link:
                 {}
               front_caster_link:
                 {}
@@ -352,5 +416,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1920
-  X: 1600
-  Y: 27
+  X: 900
+  Y: 339
